@@ -1,0 +1,16 @@
+package com.example.demo;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+public class DemoController {
+
+	@ResponseBody //json 형태로 데이터를 보내게 해준다.
+	@RequestMapping("/")
+	public String home() {
+		System.out.println("Hello Boot!!!");
+		return "Hello Boot!!";
+	}
+}

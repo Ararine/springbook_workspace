@@ -1,0 +1,5 @@
+INDEX VERSION 1.131
+C:\for studying\springboot_workspace\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3364259496.index
+\springboot_01_demo\src\main\java
+C:\for studying\springboot_workspace\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\921610726.index
+\springboot_01_demo\src\main\java
