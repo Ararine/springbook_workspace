@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 끝에 있는 TodoDAO 안에 있는 method 이름과 namespace 에 정의되어 있는 값과 일치해야 
+	한다. -->
+<mapper namespace="com.example.board.dao.BoardDAO">
+
+	<select id="count" resultType="int"> 
+		SELECT count(*) FROM board
+	</select>
+	<select id="list" parameterType="PageDTO" resultType="BoardDTO">
+		<!-- <![CDATA[]]> -->
+		<![CDATA[ select b.* from (select rownum as rm, 
+		a.* from( select * from board order by ref desc, re_step asc) a)b 
+		where b.rm >=#{startRow} and b.rm<=#{endRow} ]]>
+	</select>
+	<insert id="save" parameterType="BoardDTO">
+		INSERT INTO board(num, writer, email, subject, reg_date, readcount,
+		ref, re_step, re_level, content, ip, upload)
+		VALUES(board_num_seq.nextval, #{writer, jdbcType=VARCHAR}, #{email,
+		jdbcType=VARCHAR}, #{subject, jdbcType=VARCHAR}, sysdate, 0,
+		<choose>
+			<when test="ref==0"> board_num_seq.nextval </when>
+			<otherwise> #{ref} </otherwise>
+		</choose>
+		, #{re_step}, #{re_level}, #{content, jdbcType=VARCHAR}, #{ip,
+		jdbcType=VARCHAR}, #{upload, jdbcType=VARCHAR}
+		<!-- null 값을 허용시키기 위해 #{upload, jdbcType=VARCHAR} -->
+		)
+	</insert>
+	<update id="readCount" parameterType="int"> UPDATE board SET readcount
+		= readcount + 1 WHERE num=#{num} </update>
+	<select id="content" parameterType="int" resultType="BoardDTO"> 
+		SELECT * FROM board WHERE num=#{num} 
+	</select>
+	<select id="getFile" parameterType="int" resultType="String"> 
+		SELECT upload FROM board WHERE num=#{num} 
+	</select>
+	<update id="reStepCount" parameterType="BoardDTO">
+	 	UPDATE board SET re_step = re_step + 1 
+	 	WHERE ref=#{ref} AND re_step>#{re_step} 
+	</update>
+	<update id="update" parameterType="BoardDTO">
+		UPDATE board SET subject=#{subject}, email=#{email},
+		content=#{content}
+		<if test="upload!=null"> , upload=#{upload} 
+		</if>
+		WHERE num=#{num}
+	</update>
+	<delete id="delete" parameterType="int"> 
+	DELETE FROM board WHERE	num=#{num} 
+	</delete>
+</mapper>

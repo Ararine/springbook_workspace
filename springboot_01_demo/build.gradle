@@ -21,12 +21,16 @@ dependencies { //implementation, testImplementation은 기본 사항
 	 //개발할 때만 사용, 배포할 때는 필요없는 부분
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	
 	 //jstl dependency
 	implementation 'javax.servlet:jstl:1.2'
+	
 	 //spring boot web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	
 	//jsp //tomcat 관련 dependency
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+	
 	//lombok maven
 	compileOnly 'org.projectlombok:lombok:1.18.20'
 	annotationProcessor 'org.projectlombok:lombok:1.18.20'
