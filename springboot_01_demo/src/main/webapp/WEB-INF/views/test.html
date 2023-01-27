@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script>
+      $(document).ready(function () {
+        let user_id = '<c:out value="${sessionScope.sessionId}" />';
+        // 			alert(user_id);
+
+        if (user_id) {
+          $.ajax({
+            type: "POST",
+            url: "review_like_check.do",
+            data: { review_like_user_id: user_id },
+            dataType: "json",
+            success: function (review_like_dto_list) {
+              // alert("연결 성공");
+              for (let i = 0; i < review_like_dto_list.length; i++) {
+                let check_items = $("input[type=checkbox]");
+                // alert('check');
+                // alert(check_items.eq(i).attr('id'));
+                $(
+                  "input[id=review-bookmark_" +
+                    review_like_dto_list[i].review_like_review_seq +
+                    "]"
+                ).attr("checked", "checked");
+              }
+            },
+          });
+        }
+
+        let store_id = '<c:out value="${store_id}" />';
+
+        $.ajax({
+          type: "POST",
+          url: "review_like_num.do",
+          data: {
+            review_like_store_id: store_id,
+          },
+          success: function (data) {
+            // 					alert("전달 성공");
+            // 					alert(data[0].review_like_review_seq);
+            for (let i = 0; i < data.length; i++) {
+              // 						alert("check");
+              $(
+                "p[id=review-bookmark-number_" +
+                  data[i].review_like_review_seq +
+                  "]"
+              ).html('<p class="ms-1">' + data[i].review_like_click + "</p>");
+            }
+          },
+        });
+      });
+    </script>
+  </head>
+  <body></body>
+</html>

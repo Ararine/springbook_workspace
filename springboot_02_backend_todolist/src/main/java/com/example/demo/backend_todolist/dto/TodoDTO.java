@@ -12,7 +12,7 @@ import lombok.ToString;
 
 /*
  * @Data : @Getter, @Setter, @ToString, @EqualAndHashCode, 
- * 		   @RequestedArgusConstructor 을 합쳐 놓은 어노테이션이다.
+ * 		   @RequiredArgusConstructor 을 합쳐 놓은 어노테이션이다.
  * 
  * 일반적으로 어노테이션은 필요한거만 따로 사용하는 것을 권장하고 있다.
  */

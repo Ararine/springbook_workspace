@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.view.AbstractView;
 
@@ -18,6 +19,7 @@ import com.example.board.dao.BoardDAO;
 //다운로드 창을 띄우기 위한 뷰 페이지
 public class BoardDownLoadView extends AbstractView{
 
+	@Autowired
 	private BoardDAO dao;
 	
 	public BoardDownLoadView() {

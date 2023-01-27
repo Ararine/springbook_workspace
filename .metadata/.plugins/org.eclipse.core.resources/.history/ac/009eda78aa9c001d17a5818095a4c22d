@@ -1,8 +1,0 @@
-package com.example.demo;
-
-public class LombokTest {
-
-	public static void main(String[] args) {
-		MemDTO dto = new MemDTO();
-	}
-}

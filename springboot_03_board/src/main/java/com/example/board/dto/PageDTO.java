@@ -1,5 +1,8 @@
 package com.example.board.dto;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class PageDTO {
 
 	private int currentPage; //현재페이지
