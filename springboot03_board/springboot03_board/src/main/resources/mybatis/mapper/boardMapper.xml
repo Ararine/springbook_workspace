@@ -61,7 +61,7 @@
       UPDATE board 
       SET subject=#{subject}, email=#{email}, content=#{content}
       <if test="upload!=null">
-         ,upload=#{upload}
+         ,upload=#{upload, jdbcType=VARCHAR}
       </if>
       WHERE num=#{num}
     </update>

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,9 @@ import com.example.demo.backend_todolist.service.TodoService;
 //http://localhost:8090/todo/all
 
 //@RestController = @Controller + @ResponseBody
+
+@CrossOrigin("*") //포트번호에 관계없이 응답을 허가해주는 어노테이션
+//@CrossOrigin(origins = {"http://localhost:3000"}) //특정 url에만 허가하는 방법
 @RestController
 //@Controller
 public class TodoController {
