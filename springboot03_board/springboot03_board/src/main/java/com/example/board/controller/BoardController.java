@@ -3,6 +3,10 @@ package com.example.board.controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -101,7 +109,7 @@ public class BoardController {
 			UUID random = saveCopyFile(file, request);
 			dto.setUpload(random + "_" + file.getOriginalFilename());
 			//\\download\\temp 경로에 첨부파일 저장
-			file.transferTo(new File(file.getOriginalFilename()));
+			file.transferTo(new File(random + "_" + file.getOriginalFilename()));
 		}
 
 		dto.setIp(request.getRemoteAddr());	
@@ -110,9 +118,11 @@ public class BoardController {
 
 		// 답변글이면
 		if (dto.getRef() != 0) {
-			return "redirect:/board/list/" + pv.getCurrentPage();
+//			return "redirect:/board/list/" + pv.getCurrentPage();
+			return String.valueOf(pv.getCurrentPage());
 		} else { // 제목글
-			return "redirect:/board/list/1";
+//			return "redirect:/board/list/1";
+			return String.valueOf(1);
 		}
 	}// end writeProMethod()
 	
@@ -182,11 +192,29 @@ public class BoardController {
 		return service.contentProcess(num);
 	}// end viewMethod()
 
-	@RequestMapping("/board/contentdownload")
-	public ModelAndView downMethod(int num, ModelAndView mav) {
-		mav.addObject("num", num);
-		mav.setViewName("download");
-		return mav;
+	
+	@RequestMapping("/board/contentdownload/{filename}")
+	public ResponseEntity<Resource> downMethod(@PathVariable("filename") String filename) throws IOException {
+	  String fileName = filename.substring(filename.indexOf("_") + 1);
+	//파일명이 한글일때 인코딩 작업을 한다.
+			String str = URLEncoder.encode(fileName, "UTF-8"); 
+			
+			//원본파일명에서 공백이 있을 때, +로 표시가 되므로 공백으로 처리해줌
+			str = str.replaceAll("\\+","%20");
+			Path path = Paths.get(filePath+"\\"+filename);
+			Resource resource = new InputStreamResource(Files.newInputStream(path));
+			
+			System.out.println("resource:" + resource.getFilename());
+			
+			return ResponseEntity.ok()
+					.header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
+					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename="+str+";")
+					.body(resource);
 	}// end downMethod()
+
+
+
+
+
 
 }// end class

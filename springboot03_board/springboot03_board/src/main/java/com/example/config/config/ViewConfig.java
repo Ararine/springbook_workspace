@@ -19,7 +19,7 @@ public class ViewConfig {
 
 	@Bean
 	public BeanNameViewResolver viewResolver(){
-		BeanNameViewResolver bnvResolver=new BeanNameViewResolver();
+		BeanNameViewResolver bnvResolver = new BeanNameViewResolver();
 		bnvResolver.setOrder(1);
 		return bnvResolver;
 	}
