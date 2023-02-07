@@ -22,6 +22,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -106,7 +107,7 @@ public class BoardController {
 	public String writeProMethod(BoardDTO dto, PageDTO pv, HttpServletRequest request) throws IllegalStateException, IOException {
 		MultipartFile file = dto.getFilename();
 		if (file != null && !file.isEmpty()) {
-			UUID random = saveCopyFile(file, request);
+			UUID random = saveCopyFile(file);
 			dto.setUpload(random + "_" + file.getOriginalFilename());
 			//\\download\\temp 경로에 첨부파일 저장
 			file.transferTo(new File(random + "_" + file.getOriginalFilename()));
@@ -133,21 +134,29 @@ public class BoardController {
 	}//end updateMethod()
 	
 	@RequestMapping(value="/board/update", method=RequestMethod.PUT)
-	public void updateProMethod(@RequestBody BoardDTO dto, HttpServletRequest request) {
+	//첨부파일이 포함될시 @RequestBody를 할 경우 해당 첨부파일을 받아오지 못 한다.
+	//첨부파일의 경우 받는 방식이 다르다. (별도의 라이브러리 필요, SpringBoot의 경우 요청에 따라 맞춰서 설정이 된다.)
+	//HttpServlet을 상속받아 사용하는 request에서는 첨부파일을 받을 수 없고
+	//MultipartRequest에서 첨부파일을 받을 수 있다.
+	public void updateProMethod(BoardDTO dto, HttpServletRequest request) throws IllegalStateException, IOException {
 		System.out.printf("num: %d, writer: %s\n", dto.getNum(), dto.getWriter());
 		MultipartFile file = dto.getFilename();
 		if(file !=null && !file.isEmpty()) {
-			UUID random = saveCopyFile(file, request);
+			UUID random = saveCopyFile(file);
 			dto.setUpload(random + "_" + file.getOriginalFilename());
+			//\\download\\temp 경로에 첨부파일 저장
+			file.transferTo(new File(random + "_" + file.getOriginalFilename()));
 		}
 		
-		service.updateProcess(dto, urlPath(request));
+//		service.updateProcess(dto, urlPath(request));
+		service.updateProcess(dto, filePath);
 	}//end updateProMethod
 	
 	
 	@RequestMapping(value="/board/delete/{num}", method=RequestMethod.DELETE)
 	public void deleteMethod(@PathVariable("num") int num, HttpServletRequest request) {
-		service.deleteProcess(num, urlPath(request));
+//		service.deleteProcess(num, urlPath(request));
+		service.deleteProcess(num, filePath);
 		
 //		int totalRecord = service.countProcess();
 //		this.pdto = new PageDTO(this.currentPage, totalRecord);
@@ -156,18 +165,18 @@ public class BoardController {
 	
 	
 
-	private UUID saveCopyFile(MultipartFile file, HttpServletRequest request) {
+	private UUID saveCopyFile(MultipartFile file) {
 		String fileName = file.getOriginalFilename();
 
 		// 중복파일명을 처리하기 위해 난수 발생
 		UUID random = UUID.randomUUID();
 
-		File fe = new File(urlPath(request));
+		File fe = new File(filePath);
 		if (!fe.exists()) {
 			fe.mkdir();
 		}
-
-		File ff = new File(urlPath(request), random + "_" + fileName);
+		
+		File ff = new File(filePath, random + "_" + fileName);
 
 		try {
 			FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(ff));

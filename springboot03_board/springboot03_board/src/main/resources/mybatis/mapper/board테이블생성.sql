@@ -27,9 +27,10 @@ nocycle;
 insert into board 
 values(board_num_seq.nextval, '홍길동','young@aaaa.com','제목1',sysdate,0,board_num_seq.nextval,
 0,0,'내용 테스트.......','127.0.0.1','sample.txt');
-
+drop table board;
 commit;
 
+select * from board;
 
 select num, readcount 
 from board
@@ -89,19 +90,45 @@ select rownum, b.*
  from(select * from board order by ref desc ,re_step asc)a)b
  where b.rm>=? and b.rm <=?
 
+CREATE TABLE t_member(
+ id varchar2(20),
+ pwd varchar2(20),
+ name varchar2(30),
+ email varchar2(50),
+ joinDate Date
+);
 
+SELECT * FROM t_member;
 
+INSERT INTO t_member
+VALUES('a1234','a1234','홍길동','a1234@daum.net',sysdate);
 
+COMMIT;
 
+delete from t_member;
+drop table t_member;
 
+CREATE TABLE tb_user(
+  id number,
+  username varchar2(30),
+  password varchar2(20),
+  email varchar2(50),
+  authRole varchar2(30),
+  createDate Date
+);
+-----------------------------------------------------------------------
+CREATE SEQUENCE tb_user_id_seq
+ START WITH 1
+ INCREMENT BY 1
+ NOCACHE
+ NOCYCLE;
 
+INSERT INTO tb_user
+VALUES(tb_user_id_seq.nextval, 'a1234', 'a1234', 'a1234@daum.net', null, sysdate);
 
+COMMIT;
 
-
-
-
-
-
+SELECT * FROM tb_user;
 
 
 
