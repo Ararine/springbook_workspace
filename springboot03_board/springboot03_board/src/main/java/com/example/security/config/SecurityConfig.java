@@ -16,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.example.login.repository.UserRepository;
 import com.example.security.jwt.JwtAuthenticationFilter;
+import com.example.security.jwt.JwtAuthorizationFilter;
 import com.example.security.service.CorsConfig;
 
 
@@ -23,9 +24,6 @@ import com.example.security.service.CorsConfig;
 //POST http://localhost:8090/login
 //boy, raw , json  => {"username":"min", "password":"1234"}
 //
-
-
-
 
 @Configuration
 @EnableWebSecurity  //spring security 활성화- spring security filter가 스프링 필터체인에 등록이 된다.
@@ -43,8 +41,6 @@ public class SecurityConfig {
 	public BCryptPasswordEncoder encodePassword() {
 		return new  BCryptPasswordEncoder();
 	}
-	
-	
 	
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -75,7 +71,7 @@ public class SecurityConfig {
 			  http.addFilter(corsConfig.corsFilter())  // @CrossOrigin(인증 X), Security Filter에 등록 인증(O)
 			   
   			.addFilter(new JwtAuthenticationFilter(authenticationManager))
-			    .addFilter(new JwtAuthorizationFilter(authenticationManager, userReposiroty));
+			.addFilter(new JwtAuthorizationFilter(authenticationManager, userReposiroty));
 			    
 		}
 	}
